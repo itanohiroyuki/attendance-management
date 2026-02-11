@@ -1,0 +1,35 @@
+.email-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    max-width: 900px;
+    width: 900px;
+    height: 600px;
+    margin: 0 auto;
+}
+
+.message {
+    font-size: 22px;
+    font-weight: bold;
+    margin: 0;
+}
+
+.access-btn {
+    text-decoration: none;
+    padding: 8px 25px;
+    margin: 50px auto;
+    font-size: 22px;
+    font-weight: bold;
+    border: 1px solid #000000;
+    border-radius: 10px;
+    color: #000000;
+    background-color: #D9D9D9;
+}
+
+.resend-btn {
+    font-size: 18px;
+    border: none;
+    color: #0073CC;
+    background-color: #fff;
+}

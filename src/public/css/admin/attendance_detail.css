@@ -1,0 +1,114 @@
+.attendance-detail-container {
+    max-width: 900px;
+    margin: 40px auto;
+}
+
+.page-title {
+    font-size: 30px;
+    font-weight: bold;
+    margin-bottom: 24px;
+}
+
+.detail-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 1px 40px;
+    max-width: 770px;
+    margin: 0 auto;
+}
+
+.detail-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.detail-table tr {
+    border-bottom: 1px solid #E1E1E1;
+}
+
+.detail-table tr.no-border {
+    border-bottom: none;
+}
+
+
+.detail-table th {
+    width: 180px;
+    text-align: left;
+    font-size: 14px;
+    color: #737373;
+    padding: 16px;
+}
+
+.detail-table td {
+    padding: 16px 16px 16px 80px;
+    font-size: 14px;
+}
+
+.detail-table tr:last-child th,
+.detail-table tr:last-child td {
+    border-bottom: none;
+}
+
+.date-name {
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    font-weight: bold;
+    margin-left: 7px;
+}
+
+.date-display {
+    display: flex;
+    gap: 135px;
+    align-items: center;
+    margin-left: 8px;
+}
+
+.date-year {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.date-md {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.time-range {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+}
+
+.time-range input {
+    width: 100px;
+    padding: 6px 8px;
+    border: 1px solid #E1E1E1;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+textarea {
+    width: 71%;
+    height: 80px;
+    border: 1px solid #E1E1E1;
+    border-radius: 4px;
+    padding: 8px;
+    font-size: 16px;
+    resize: none;
+}
+
+.btn-area {
+    margin-top: 24px;
+    text-align: right;
+}
+
+.edit-btn {
+    background: #000;
+    color: #fff;
+    padding: 8px 24px;
+    border-radius: 6px;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+}
