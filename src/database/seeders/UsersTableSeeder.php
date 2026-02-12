@@ -20,6 +20,14 @@ class UsersTableSeeder extends Seeder
             ['name' => '中西 教夫', 'email' => 'norio.n@coachtech.com'],
         ];
 
+        User::create([
+            'name' => '管理者',
+            'email' => 'admin@coachtech.com',
+            'email_verified_at' => Carbon::now(),
+            'password' => Hash::make('password'),
+            'is_admin' => true,
+        ]);
+
         foreach ($users as $user) {
             User::create([
                 'name' => $user['name'],
@@ -29,13 +37,5 @@ class UsersTableSeeder extends Seeder
                 'is_admin' => false,
             ]);
         }
-
-        User::create([
-            'name' => '管理者',
-            'email' => 'admin@coachtech.com',
-            'email_verified_at' => Carbon::now(),
-            'password' => Hash::make('password'),
-            'is_admin' => true,
-        ]);
     }
 }

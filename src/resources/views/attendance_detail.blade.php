@@ -34,17 +34,20 @@
                         <th>出勤・退勤</th>
                         <td class="time-range">
                             @if ($hasPendingCorrection)
-                                <span
-                                    class="time-text">{{ optional($attendance?->start_time)->format('H:i') ?? '—' }}</span>
+                                <span class="time-text">
+                                    {{ $pendingCorrection->requested_start_time ? substr($pendingCorrection->requested_start_time, 0, 5) : '—' }}
+                                </span>
                                 <span class="time-separator">〜</span>
-                                <span class="time-text">{{ optional($attendance?->end_time)->format('H:i') ?? '—' }}</span>
+                                <span class="time-text">
+                                    {{ $pendingCorrection->requested_end_time ? substr($pendingCorrection->requested_end_time, 0, 5) : '—' }}
+                                </span>
                             @else
                                 <input type="text" name="start_time"
-                                    value="{{ old('start_time', optional($attendance?->start_time)->format('H:i')) }}"
+                                    value="{{ old('start_time', $attendance?->start_time ? substr($attendance->start_time, 11, 5) : '') }}"
                                     class="time-input">
                                 <span class="time-separator">〜</span>
                                 <input type="text" name="end_time"
-                                    value="{{ old('end_time', optional($attendance?->end_time)->format('H:i')) }}"
+                                    value="{{ old('end_time', $attendance?->end_time ? substr($attendance->end_time, 11, 5) : '') }}"
                                     class="time-input">
                             @endif
                         </td>
@@ -55,10 +58,10 @@
                         <td class="time-range">
                             @if ($hasPendingCorrection)
                                 <span
-                                    class="time-text">{{ $attendance?->break1_start_time ? substr($attendance->break1_start_time, 0, 5) : '—' }}</span>
+                                    class="time-text">{{ $pendingCorrection?->requested_break1_start_time ? substr($pendingCorrection->requested_break1_start_time, 0, 5) : '—' }}</span>
                                 <span class="time-separator">〜</span>
                                 <span
-                                    class="time-text">{{ $attendance?->break1_end_time ? substr($attendance->break1_end_time, 0, 5) : '—' }}</span>
+                                    class="time-text">{{ $pendingCorrection?->requested_break1_end_time ? substr($pendingCorrection->requested_break1_end_time, 0, 5) : '—' }}</span>
                             @else
                                 <input type="text" name="break1_start_time"
                                     value="{{ old('break1_start_time', $attendance?->break1_start_time ? substr($attendance->break1_start_time, 0, 5) : '') }}"

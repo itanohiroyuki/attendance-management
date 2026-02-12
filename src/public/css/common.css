@@ -6,6 +6,8 @@ body {
     width: 100vw;
     background: #f5f5f5;
     font-family: sans-serif;
+    margin: 0;
+    padding: 0;
 }
 
 .img-full {
@@ -46,6 +48,11 @@ header {
     vertical-align: middle;
 }
 
+.header-logo img {
+    height: 50px;
+    width: auto;
+}
+
 .header__nav {
     display: flex;
 }
@@ -53,6 +60,7 @@ header {
 .header__nav ul {
     display: flex;
     align-items: center;
+    gap: 30px;
     list-style: none;
 }
 
@@ -65,12 +73,13 @@ header {
 }
 .header__nav a {
     color: #fff;
+    font-size: 20px;
     text-decoration: none;
 }
 
 .header__logout {
     color: #fff;
-    font-size: 16px;
+    font-size: 20px;
 }
 
 .header__logout:hover {
@@ -174,8 +183,13 @@ header {
     top: 80px !important;
 }
 
-/* @media (min-width: 768px) and (max-width: 850px) {
-    .header__logo {
-        width: 25vw;
+@media screen and (min-width: 1401px) and (max-width: 1540px) {
+
+    .attendance-detail-container {
+        max-width: 1200px;
     }
-} */
+
+    .detail-card {
+        padding: 24px;
+    }
+}
