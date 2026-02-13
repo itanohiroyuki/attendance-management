@@ -24,7 +24,7 @@ class AdminAttendanceDetailTest extends TestCase
 
         $this->actingAs($admin);
 
-        $response = $this->get('/admin/attendance/' . $attendance->id);
+        $response = $this->get('/admin/attendance/detail/' . $attendance->id);
 
         $response->assertStatus(200);
         $response->assertSee('09:00');
@@ -41,14 +41,15 @@ class AdminAttendanceDetailTest extends TestCase
 
         $this->actingAs($admin);
 
-        $response = $this->post('/admin/attendance/' . $attendance->id, [
-            'start_time' => '19:00',
-            'end_time'   => '18:00',
+        $response = $this->put("/admin/attendance/detail/{$attendance->id}", [
+            'start_time' => '18:00',
+            'end_time'   => '09:00',
             'note'       => '修正',
         ]);
 
+        $response->assertStatus(302);
         $response->assertSessionHasErrors([
-            'time' => '出勤時間もしくは退勤時間が不適切な値です',
+            'start_time' => '出勤時間もしくは退勤時間が不適切な値です',
         ]);
     }
 
@@ -63,14 +64,16 @@ class AdminAttendanceDetailTest extends TestCase
 
         $this->actingAs($admin);
 
-        $response = $this->post('/admin/attendance/' . $attendance->id, [
-            'break_start' => '19:00',
-            'break_end'   => '19:30',
-            'note'        => '修正',
+        $response = $this->put("/admin/attendance/detail/{$attendance->id}", [
+            'start_time' => '09:00',
+            'end_time'   => '18:00',
+            'break1_start_time' => '19:00',
+            'note'       => '修正',
         ]);
 
+        $response->assertStatus(302);
         $response->assertSessionHasErrors([
-            'break_time' => '休憩時間が不適切な値です',
+            'break1_start_time' => '休憩時間が不適切な値です',
         ]);
     }
 
@@ -85,14 +88,16 @@ class AdminAttendanceDetailTest extends TestCase
 
         $this->actingAs($admin);
 
-        $response = $this->post('/admin/attendance/' . $attendance->id, [
-            'break_start' => '17:00',
-            'break_end'   => '19:00',
-            'note'        => '修正',
+        $response = $this->put("/admin/attendance/detail/{$attendance->id}", [
+            'start_time' => '09:00',
+            'end_time'   => '18:00',
+            'break1_end_time' => '19:00',
+            'note'       => '修正',
         ]);
 
+        $response->assertStatus(302);
         $response->assertSessionHasErrors([
-            'break_time' => '休憩時間もしくは退勤時間が不適切な値です',
+            'break1_end_time' => '休憩時間もしくは退勤時間が不適切な値です',
         ]);
     }
 
@@ -105,12 +110,13 @@ class AdminAttendanceDetailTest extends TestCase
 
         $this->actingAs($admin);
 
-        $response = $this->post('/admin/attendance/' . $attendance->id, [
+        $response = $this->put("/admin/attendance/detail/{$attendance->id}", [
             'start_time' => '09:00',
             'end_time'   => '18:00',
             'note'       => '',
         ]);
 
+        $response->assertStatus(302);
         $response->assertSessionHasErrors([
             'note' => '備考を記入してください',
         ]);

@@ -32,7 +32,7 @@ class AdminDailyAttendanceTest extends TestCase
 
         $this->actingAs($admin);
 
-        $response = $this->get('/admin/attendance');
+        $response = $this->get('/admin/attendance/list');
 
         $response->assertStatus(200);
         $response->assertSee('ユーザー1');
@@ -48,7 +48,7 @@ class AdminDailyAttendanceTest extends TestCase
 
         $today = now()->format('Y-m-d');
 
-        $response = $this->get('/admin/attendance');
+        $response = $this->get('/admin/attendance/list');
 
         $response->assertSee($today);
     }
@@ -69,7 +69,7 @@ class AdminDailyAttendanceTest extends TestCase
 
         $this->actingAs($admin);
 
-        $response = $this->get('/admin/attendance?date=' . $yesterday);
+        $response = $this->get('/admin/attendance/list?date=' . $yesterday);
 
         $response->assertSee($yesterday);
         $response->assertSee('前日ユーザー');
@@ -91,7 +91,7 @@ class AdminDailyAttendanceTest extends TestCase
 
         $this->actingAs($admin);
 
-        $response = $this->get('/admin/attendance?date=' . $tomorrow);
+        $response = $this->get('/admin/attendance/list?date=' . $tomorrow);
 
         $response->assertSee($tomorrow);
         $response->assertSee('翌日ユーザー');

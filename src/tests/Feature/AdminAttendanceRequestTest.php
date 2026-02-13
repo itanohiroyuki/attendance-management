@@ -3,103 +3,123 @@
 namespace Tests\Feature;
 
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Models\User;
 use App\Models\Attendance;
 use App\Models\AttendanceCorrection;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class AdminAttendanceRequestTest extends TestCase
 {
     use RefreshDatabase;
 
-    // 承認待ちの修正申請が全て表示される
-    public function test_pending_requests_are_displayed()
+    private User $admin;
+
+    protected function setUp(): void
     {
-        $admin = User::factory()->admin()->create();
+        parent::setUp();
 
-        $requests = AttendanceCorrection::factory()->count(2)->create([
-            'status' => 'pending',
+        // 管理者ユーザー（admin ミドルウェア想定）
+        $this->admin = User::factory()->create([
+            'is_admin' => true,
         ]);
-
-        $this->actingAs($admin);
-
-        $response = $this->get('/admin/requests?status=pending');
-
-        $response->assertStatus(200);
-
-        foreach ($requests as $request) {
-            $response->assertSee($request->id);
-        }
     }
 
-    // 承認済みの修正申請が全て表示される
-    public function test_approved_requests_are_displayed()
+    /** @test */
+    public function pending_requests_are_displayed()
     {
-        $admin = User::factory()->admin()->create();
+        $attendance = Attendance::factory()->create();
 
-        $requests = AttendanceCorrection::factory()->count(2)->create([
-            'status' => 'approved',
+        AttendanceCorrection::factory()->create([
+            'attendance_id' => $attendance->id,
+            'status' => AttendanceCorrection::STATUS_PENDING,
+            'reason' => '未承認申請',
         ]);
 
-        $this->actingAs($admin);
-
-        $response = $this->get('/admin/requests?status=approved');
+        $response = $this->actingAs($this->admin)->get(
+            '/admin/stamp_correction_request/list?status=pending'
+        );
 
         $response->assertStatus(200);
-
-        foreach ($requests as $request) {
-            $response->assertSee($request->id);
-        }
+        $response->assertSee('未承認申請');
     }
 
-    // 修正申請の詳細内容が正しく表示される
-    public function test_request_detail_is_displayed_correctly()
+    /** @test */
+    public function approved_requests_are_displayed()
     {
-        $admin = User::factory()->admin()->create();
+        $attendance = Attendance::factory()->create();
 
-        $request = AttendanceCorrection::factory()->create([
-            'reason' => '出勤時間の修正',
+        AttendanceCorrection::factory()->create([
+            'attendance_id' => $attendance->id,
+            'status' => AttendanceCorrection::STATUS_APPROVED,
+            'reason' => '承認済み申請',
         ]);
 
-        $this->actingAs($admin);
-
-        $response = $this->get('/admin/requests/' . $request->id);
+        $response = $this->actingAs($this->admin)->get(
+            '/admin/stamp_correction_request/list?status=approved'
+        );
 
         $response->assertStatus(200);
-        $response->assertSee('出勤時間の修正');
+        $response->assertSee('承認済み申請');
     }
 
-    // 修正申請の承認処理が正しく行われる
-    public function test_request_can_be_approved()
+    /** @test */
+    public function request_detail_is_displayed_correctly()
     {
-        $admin = User::factory()->admin()->create();
-
         $attendance = Attendance::factory()->create([
             'start_time' => '09:00',
+            'end_time' => '18:00',
         ]);
 
-        $request = AttendanceCorrection::factory()->create([
+        $correction = AttendanceCorrection::factory()->create([
             'attendance_id' => $attendance->id,
-            'new_start_time' => '10:00',
-            'status' => 'pending',
+            'requested_start_time' => '10:00',
+            'requested_end_time' => '19:00',
+            'status' => AttendanceCorrection::STATUS_PENDING,
         ]);
 
-        $this->actingAs($admin);
+        $response = $this->actingAs($this->admin)->get(
+            '/admin/stamp_correction_request/approve/' . $correction->id
+        );
 
-        $response = $this->post('/admin/requests/' . $request->id . '/approve');
+        $response->assertStatus(200);
+        $response->assertSee('10:00');
+        $response->assertSee('19:00');
+    }
 
-        $response->assertStatus(302);
-
-        // 申請が承認済みになっている
-        $this->assertDatabaseHas('attendance_requests', [
-            'id' => $request->id,
-            'status' => 'approved',
+    /** @test */
+    public function request_can_be_approved()
+    {
+        $attendance = Attendance::factory()->create([
+            'start_time' => '09:00',
+            'end_time' => '18:00',
         ]);
 
-        // 勤怠情報が更新されている
+        $correction = AttendanceCorrection::factory()->create([
+            'attendance_id' => $attendance->id,
+            'requested_start_time' => '10:00',
+            'requested_end_time' => '19:00',
+            'requested_break1_start_time' => '12:00',
+            'requested_break1_end_time' => '13:00',
+            'status' => AttendanceCorrection::STATUS_PENDING,
+        ]);
+
+        $response = $this->actingAs($this->admin)->post(
+            '/admin/stamp_correction_request/' . $correction->id . '/approve'
+        );
+
+        $response->assertRedirect();
+        $response->assertSessionHas('message', '申請を承認しました');
+
+        $this->assertDatabaseHas('attendance_corrections', [
+            'id' => $correction->id,
+            'status' => AttendanceCorrection::STATUS_APPROVED,
+            'approved_by' => $this->admin->id,
+        ]);
+
         $this->assertDatabaseHas('attendances', [
             'id' => $attendance->id,
-            'start_time' => '10:00',
+            'start_time' => $attendance->work_date->format('Y-m-d') . ' 10:00:00',
+            'end_time'   => $attendance->work_date->format('Y-m-d') . ' 19:00:00',
         ]);
     }
 }

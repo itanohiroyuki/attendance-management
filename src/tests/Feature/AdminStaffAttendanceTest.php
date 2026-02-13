@@ -16,13 +16,11 @@ class AdminStaffAttendanceTest extends TestCase
     {
         $admin = User::factory()->admin()->create();
 
-        $users = User::factory()->count(2)->create([
-            'role' => 'user',
-        ]);
+        $user = User::factory()->create();
 
         $this->actingAs($admin);
 
-        $response = $this->get('/admin/staff');
+        $response = $this->get('/admin/attendance/staff');
 
         $response->assertStatus(200);
 
@@ -47,7 +45,7 @@ class AdminStaffAttendanceTest extends TestCase
 
         $this->actingAs($admin);
 
-        $response = $this->get('/admin/staff/' . $user->id . '/attendance');
+        $response = $this->get('/admin/attendance/staff/' . $user->id);
 
         $response->assertStatus(200);
         $response->assertSee('09:00');
@@ -67,7 +65,7 @@ class AdminStaffAttendanceTest extends TestCase
 
         $this->actingAs($admin);
 
-        $response = $this->get('/admin/staff/' . $user->id . '/attendance?month=prev');
+        $response = $this->get('/admin/attendance/staff/' . $user->id . '?month=prev');
 
         $response->assertStatus(200);
         $response->assertSee(now()->subMonth()->format('Y-m'));
@@ -86,7 +84,7 @@ class AdminStaffAttendanceTest extends TestCase
 
         $this->actingAs($admin);
 
-        $response = $this->get('/admin/staff/' . $user->id . '/attendance?month=next');
+        $response = $this->get('/admin/attendance/staff/' . $user->id . '?month=next');
 
         $response->assertStatus(200);
         $response->assertSee(now()->addMonth()->format('Y-m'));
@@ -101,7 +99,7 @@ class AdminStaffAttendanceTest extends TestCase
 
         $this->actingAs($admin);
 
-        $response = $this->get('/admin/attendance/' . $attendance->id);
+        $response = $this->get('/admin/attendance/detail/' . $attendance->id);
 
         $response->assertStatus(200);
         $response->assertSee('勤怠詳細');

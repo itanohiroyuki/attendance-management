@@ -24,6 +24,8 @@ class AttendanceCorrection extends Model
         'requested_break2_start_time',
         'requested_break2_end_time',
         'reason',
+        'approved_at',
+        'approved_by',
     ];
 
 
