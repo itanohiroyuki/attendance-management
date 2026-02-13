@@ -112,6 +112,30 @@ php artisan db:seed
 
 ![alt](er.png)
 
+## テストアカウント(ダミーデータ）
+name: 西　怜奈  
+email: reina.n@coachtech.com  
+password: password  
+-------------------------
+name: 管理者  
+email: admin@coachtech.com  
+password: password  
+-------------------------
+
+## PHPUnitを利用したテストに関して
+以下のコマンド:  
+```
+//テスト用データベースの作成
+docker-compose exec mysql bash
+mysql -u root -p
+//パスワードはrootと入力
+create database test_database;
+
+docker-compose exec php bash
+php artisan migrate:fresh --env=testing
+./vendor/bin/phpunit
+```
+
 ## URL
 
 - 開発環境：http://localhost/
